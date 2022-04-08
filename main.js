@@ -1,8 +1,10 @@
+const categorias = ["Carne", "Verdura"];
+const productos = [];
 
 function verificarNumero(texto){
     let dato = parseInt(prompt(texto));
     while(isNaN(dato)){
-        dato = prompt(`El dato introducido es incorrecto. ${texto}`)
+        dato = parseInt(prompt(`El dato introducido es incorrecto. ${texto}`));
     }
     return dato;
 }
@@ -15,10 +17,41 @@ function verificarTexto(texto){
     return dato;
 }
 
+function listarArray(array, fn, opcionAlterna){
+    data = "";
+    let i;
+    for(i = 0; i < array.length ; i++){
+        data = data + (i+1) + ". " + fn(array[i]) + "\n";
+    }
+    if(!(opcionAlterna == undefined)){
+        data = data + (i + 1) + ". " + opcionAlterna + " \n";
+        data = data + (i + 2) + ". Salir";
+    } else {
+        data = data + (i + 1) + ". Salir"
+    }
+    
+    return data;
+}
+
 class Producto{
     constructor(nombre, categoria, cantidad, precio, costo){
+        let existe = false;
         this.nombre = nombre;
-        this.categoria = categoria;
+        for(let i = 0; i < categorias.length; i++){
+            if(categoria == categorias[i]){
+                existe = true;
+            }
+        }
+        if(existe == true){            
+            this.categoria = categoria;
+        } else {
+            if(confirm("La categoria no existe, ¿Desea agregarla?")){
+                categorias.push(categoria);
+                this.categoria = categoria;
+            } else {
+                alert("Este producto no tendra categoria");
+            }
+        }
 
         while(cantidad < 0){
             alert("La cantidad introducida es menor a 0");
@@ -43,19 +76,13 @@ class Producto{
         return this.precio - this.costo;
     }
 
-    agregarStock(){
-        let cantidad = verificarNumero("Ingrese la cantidad a agregar.");
-        while(cantidad < 0){
-            alert("La cantidad fue menor a 0. Por favor introducir nuevamente")
-            cantidad = verificarNumero("Ingrese la cantidad a agregar.")
-        }
+    agregarStock(cantidad){
         this.cantidad += cantidad;
         alert(`Se ha agregado la cantidad de ${cantidad}. Tu cantidad actual de ${this.nombre} es de ${this.cantidad}`);
     }
 
-    venderProducto(){
-        let cantidad = verificarNumero("Ingrese la cantidad a vender.");
-        while(cantidad < 0){
+    venderProducto(cantidad){
+        while(this.cantidad - cantidad < 0){
             alert("La cantidad fue menor a 0. Por favor introducir nuevamente")
             cantidad = verificarNumero("Ingrese la cantidad a vender.")
         }
@@ -71,13 +98,79 @@ const crearProducto = () => {
     let precio = verificarNumero("Ingrese el precio inicial del producto");
     let costo = verificarNumero("Ingrese el costo inicial del producto"); 
 
-    return new Producto(nombre, categoria, cantidad, precio, costo);
+    productos.push(new Producto(nombre, categoria, cantidad, precio, costo));
 }
 
-let lechuga = new Producto("Lechuga", "Verdura", 0, 50, 20);
-let pollo = new Producto("Pollo", "Carne", 0, 120, 50);
-let res = new Producto("Res", "Carne", 0, 180, 80);
+const comprar = () => {
+    while(true){
+        seleccion = verificarNumero(`Que desea comprar.\n${listarArray(productos, el => el.nombre, "Agregar otro producto")}`) - 1;
+        if(productos[seleccion]){
+            let cantidad = verificarNumero(`Acaba de seleccionar ${productos[seleccion].nombre}, su cantidad actual es de ${productos[seleccion].cantidad} y su precio es de ${productos[seleccion].costo}, ¿Cuanto comprará?`)
+            while(cantidad < 0){
+                alert("Eligio una cantidad negativa, por favor vuelva a introducir la cantidad");
+                cantidad = verificarNumero(`Acaba de seleccionar ${productos[seleccion].nombre}, su cantidad actual es de ${productos[seleccion].cantidad} y su precio es de ${productos[seleccion].costo}, ¿Cuanto comprará?`)
+            }
+            productos[seleccion].agregarStock(cantidad);
+        } else if (seleccion == productos.length){
+            crearProducto();
+        } else if (seleccion == productos.length + 1){
+            break;
+        } else {
+            alert("Selecciono un codigo erroneo, vuelva a intentarlo.");
+            continue;
+        }
+    }
+}
 
-console.log("Buenos dias, acabo de crearte 3 objetos para que puedas usar sus metodos.");
-console.log("Intenta con lechuga.calcularBeneficio()");
-console.log("Para crear nuevos productos escribe: let 'Nombre de producto' = crearProducto()");
+const vender = () => {
+    while(true){
+        seleccion = verificarNumero(`Que desea vender.\n${listarArray(productos, el => el.nombre)}`) - 1;
+        if(productos[seleccion]){
+            let cantidad = verificarNumero(`Acaba de seleccionar ${productos[seleccion].nombre}, su cantidad actual es de ${productos[seleccion].cantidad} y su precio es de ${productos[seleccion].costo}, ¿Cuanto venderá?`)
+            while(cantidad < 0){
+                alert("Eligio una cantidad negativa, por favor vuelva a introducir la cantidad");
+                cantidad = verificarNumero(`Acaba de seleccionar ${productos[seleccion].nombre}, su cantidad actual es de ${productos[seleccion].cantidad} y su precio es de ${productos[seleccion].costo}, ¿Cuanto venderá?`)
+            }
+            productos[seleccion].venderProducto(cantidad);
+        } else if (seleccion == productos.length){
+            break;
+        } else {
+            alert("Selecciono un codigo erroneo, vuelva a intentarlo.");
+            continue;
+        }
+    }
+}
+
+productos.push(new Producto("Lechuga", "Verdura", 0, 50, 20));
+productos.push(new Producto("Pollo", "Carne", 0, 120, 50));
+productos.push(new Producto("Res", "Carne", 0, 180, 80));
+
+
+let seleccion = true
+while(seleccion){
+    switch(prompt("Buenos dias.\n¿Que desea hacer hoy?\n1.Comprar\n2.Vender\n3.Agregar Producto\n4.Salir")){
+        case "1":
+            alert("Ha seleccionado Comprar.");
+            comprar();
+            break;
+        case "2":
+            alert("Ha seleccionado Vender.");
+            vender();
+            break;
+        case "3":
+            alert("Ha seleccionado Agregar Producto.");
+            crearProducto();
+            break;
+        case "4":
+            alert("Ha seleccionado Salir.");
+            seleccion = false;
+            break;
+        case null:
+            alert("Ha seleccionado Salir.");
+            seleccion = false;
+            break;
+        default:
+            alert("Ha seleccionado cualquier cosa señor/a.");
+            break;
+    }
+}
