@@ -35,13 +35,13 @@ function listarArray(array, fn, opcionAlterna){
     return data;
 }
 
-const expresarVenta = (objeto) => {
+const expresarLista = (objeto) => {
     let dato = "";
     dato += objeto.fecha + "\n";
     for(let i = 0; i < objeto.cantidad.length; i++){
         dato += `${objeto.nombre[i]}       ${objeto.cantidad[i]}     ${objeto.precio[i]}\n`;
     }
-    dato += "          " + objeto.precioFinal;
+    dato += "Total:          " + objeto.precioFinal;
     return dato;
 }
 
@@ -187,7 +187,7 @@ const historialDeVentas = () => {
     while(true){
         let seleccion = verificarNumero(`${listarArray(historialVentas, el => el.fecha)}`) - 1;
         if(historialVentas[seleccion]){
-            alert(expresarVenta(historialVentas[seleccion]));
+            alert(expresarLista(historialVentas[seleccion]));
         } else if(seleccion == historialVentas.length){
             break;
         } else {
@@ -199,10 +199,10 @@ const historialDeVentas = () => {
 
 const historialDeCompras = () => {
     while(true){
-        let seleccion = verificarNumero(`${listarArray(historialVentas, el => el.fecha)}`) - 1;
-        if(historialVentas[seleccion]){
-            alert(expresarVenta(historialVentas[seleccion]));
-        } else if(seleccion == historialVentas.length){
+        let seleccion = verificarNumero(`${listarArray(historialCompras, el => el.fecha)}`) - 1;
+        if(historialCompras[seleccion]){
+            alert(expresarLista(historialCompras[seleccion]));
+        } else if(seleccion == historialCompras.length){
             break;
         } else {
             alert("Selecciono un codigo erroneo, vuelva a intentarlo.")
