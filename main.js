@@ -1,5 +1,7 @@
 const categorias = ["Carne", "Verdura"];
 const productos = [];
+const historialCompras = [];
+const historialVentas = [];
 
 function verificarNumero(texto){
     let dato = parseInt(prompt(texto));
@@ -31,6 +33,16 @@ function listarArray(array, fn, opcionAlterna){
     }
     
     return data;
+}
+
+const expresarVenta = (objeto) => {
+    let dato = "";
+    dato += objeto.fecha + "\n";
+    for(let i = 0; i < objeto.cantidad.length; i++){
+        dato += `${objeto.nombre[i]}       ${objeto.cantidad[i]}     ${objeto.precio[i]}\n`;
+    }
+    dato += "          " + objeto.precioFinal;
+    return dato;
 }
 
 class Producto{
@@ -78,16 +90,33 @@ class Producto{
 
     agregarStock(cantidad){
         this.cantidad += cantidad;
-        alert(`Se ha agregado la cantidad de ${cantidad}. Tu cantidad actual de ${this.nombre} es de ${this.cantidad}`);
+        alert(`Se ha agregado la cantidad de ${cantidad} por el costo de ${this.costo * cantidad}${this.moneda}. Tu cantidad actual de ${this.nombre} es de ${this.cantidad}`);
     }
 
     venderProducto(cantidad){
         while(this.cantidad - cantidad < 0){
-            alert("La cantidad fue menor a 0. Por favor introducir nuevamente")
+            alert(`No tiene suficientes ${this.nombre}`);
             cantidad = verificarNumero("Ingrese la cantidad a vender.")
         }
         alert(`Vendiste ${this.nombre} por ${this.precio * cantidad}${this.moneda}.\nTe quedan ${this.cantidad - cantidad}`);
         this.cantidad -= cantidad;
+    }
+}
+
+class Lista{
+    constructor(){
+        this.fecha = new Date();
+        this.fecha = this.fecha.toLocaleDateString();
+        this.nombre = [];
+        this.precio = [];
+        this.cantidad = [];
+        this.precioFinal = 0;
+    }
+
+    calcularPrecioFinal(){
+        for(let i = 0; i < this.cantidad.length; i++){
+            this.precioFinal += this.cantidad[i]*this.precio[i];
+        }
     }
 }
 
@@ -102,15 +131,19 @@ const crearProducto = () => {
 }
 
 const comprar = () => {
+    let lista = new Lista()
     while(true){
         seleccion = verificarNumero(`Que desea comprar.\n${listarArray(productos, el => el.nombre, "Agregar otro producto")}`) - 1;
         if(productos[seleccion]){
-            let cantidad = verificarNumero(`Acaba de seleccionar ${productos[seleccion].nombre}, su cantidad actual es de ${productos[seleccion].cantidad} y su precio es de ${productos[seleccion].costo}, ¿Cuanto comprará?`)
+            let cantidad = verificarNumero(`Acaba de seleccionar ${productos[seleccion].nombre}, su cantidad actual es de ${productos[seleccion].cantidad} y su costo es de ${productos[seleccion].costo}, ¿Cuanto comprará?`)
             while(cantidad < 0){
                 alert("Eligio una cantidad negativa, por favor vuelva a introducir la cantidad");
-                cantidad = verificarNumero(`Acaba de seleccionar ${productos[seleccion].nombre}, su cantidad actual es de ${productos[seleccion].cantidad} y su precio es de ${productos[seleccion].costo}, ¿Cuanto comprará?`)
+                cantidad = verificarNumero(`Acaba de seleccionar ${productos[seleccion].nombre}, su cantidad actual es de ${productos[seleccion].cantidad} y su costo es de ${productos[seleccion].costo}, ¿Cuanto comprará?`)
             }
             productos[seleccion].agregarStock(cantidad);
+            lista.cantidad.push(cantidad);
+            lista.nombre.push(productos[seleccion].nombre);
+            lista.precio.push(productos[seleccion].costo);
         } else if (seleccion == productos.length){
             crearProducto();
         } else if (seleccion == productos.length + 1){
@@ -120,18 +153,25 @@ const comprar = () => {
             continue;
         }
     }
+
+    lista.calcularPrecioFinal();
+    historialCompras.push(lista);
 }
 
 const vender = () => {
+    let lista = new Lista()
     while(true){
-        seleccion = verificarNumero(`Que desea vender.\n${listarArray(productos, el => el.nombre)}`) - 1;
+        let seleccion = verificarNumero(`Que desea vender.\n${listarArray(productos, el => el.nombre)}`) - 1;
         if(productos[seleccion]){
-            let cantidad = verificarNumero(`Acaba de seleccionar ${productos[seleccion].nombre}, su cantidad actual es de ${productos[seleccion].cantidad} y su precio es de ${productos[seleccion].costo}, ¿Cuanto venderá?`)
+            let cantidad = verificarNumero(`Acaba de seleccionar ${productos[seleccion].nombre}, su cantidad actual es de ${productos[seleccion].cantidad} y su precio es de ${productos[seleccion].precio}, ¿Cuanto venderá?`)
             while(cantidad < 0){
                 alert("Eligio una cantidad negativa, por favor vuelva a introducir la cantidad");
-                cantidad = verificarNumero(`Acaba de seleccionar ${productos[seleccion].nombre}, su cantidad actual es de ${productos[seleccion].cantidad} y su precio es de ${productos[seleccion].costo}, ¿Cuanto venderá?`)
+                cantidad = verificarNumero(`Acaba de seleccionar ${productos[seleccion].nombre}, su cantidad actual es de ${productos[seleccion].cantidad} y su precio es de ${productos[seleccion].precio}, ¿Cuanto venderá?`)
             }
             productos[seleccion].venderProducto(cantidad);
+            lista.nombre.push(productos[seleccion].nombre);
+            lista.cantidad.push(cantidad);
+            lista.precio.push(productos[seleccion].precio);
         } else if (seleccion == productos.length){
             break;
         } else {
@@ -139,6 +179,36 @@ const vender = () => {
             continue;
         }
     }
+    lista.calcularPrecioFinal();
+    historialVentas.push(lista);
+}
+
+const historialDeVentas = () => {
+    while(true){
+        let seleccion = verificarNumero(`${listarArray(historialVentas, el => el.fecha)}`) - 1;
+        if(historialVentas[seleccion]){
+            alert(expresarVenta(historialVentas[seleccion]));
+        } else if(seleccion == historialVentas.length){
+            break;
+        } else {
+            alert("Selecciono un codigo erroneo, vuelva a intentarlo.")
+            continue;
+        }
+    }
+}
+
+const historialDeCompras = () => {
+    while(true){
+        let seleccion = verificarNumero(`${listarArray(historialVentas, el => el.fecha)}`) - 1;
+        if(historialVentas[seleccion]){
+            alert(expresarVenta(historialVentas[seleccion]));
+        } else if(seleccion == historialVentas.length){
+            break;
+        } else {
+            alert("Selecciono un codigo erroneo, vuelva a intentarlo.")
+            continue;
+        }
+    } 
 }
 
 productos.push(new Producto("Lechuga", "Verdura", 0, 50, 20));
@@ -148,7 +218,7 @@ productos.push(new Producto("Res", "Carne", 0, 180, 80));
 
 let seleccion = true
 while(seleccion){
-    switch(prompt("Buenos dias.\n¿Que desea hacer hoy?\n1.Comprar\n2.Vender\n3.Agregar Producto\n4.Salir")){
+    switch(prompt("Buenos dias.\n¿Que desea hacer hoy?\n1. Comprar\n2. Vender\n3. Agregar Producto\n4. Ver historial de Compras\n5. Ver historial de Ventas\n6. Salir")){
         case "1":
             alert("Ha seleccionado Comprar.");
             comprar();
@@ -162,6 +232,13 @@ while(seleccion){
             crearProducto();
             break;
         case "4":
+            alert("Ha seleccionado ver historial de Compras");
+            break;
+        case "5":
+            alert("Ha seleccionado ver historial de Ventas");
+            historialDeVentas();
+            break;
+        case "6":
             alert("Ha seleccionado Salir.");
             seleccion = false;
             break;
@@ -174,3 +251,4 @@ while(seleccion){
             break;
     }
 }
+
