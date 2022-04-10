@@ -3,7 +3,7 @@ const productos = [];
 const historialCompras = [];
 const historialVentas = [];
 
-function verificarNumero(texto){
+const verificarNumero = (texto) => {
     let dato = parseInt(prompt(texto));
     while(isNaN(dato)){
         dato = parseInt(prompt(`El dato introducido es incorrecto. ${texto}`));
@@ -11,7 +11,7 @@ function verificarNumero(texto){
     return dato;
 }
 
-function verificarTexto(texto){
+const verificarTexto = (texto) => {
     let dato = prompt(texto);
     while(dato == null || dato.trim() == ""){
         dato = prompt(`El dato introducido es incorrecto. ${texto}`)
@@ -20,7 +20,7 @@ function verificarTexto(texto){
 }
 
 //Funcion para listar el Array con numeros
-function listarArray(array, fn, opcionAlterna){
+const listarArray = (array, fn, opcionAlterna) => {
     data = "";
     let i;
     for(i = 0; i < array.length ; i++){
@@ -102,8 +102,8 @@ class Producto{
     }
 
     venderProducto(cantidad){
-        while(this.cantidad - cantidad < 0 || cantidad == 0){
-            alert(`No tiene suficientes ${this.nombre} o ha seleccionado 0 de cantidad.`);
+        while(this.cantidad - cantidad < 0){
+            alert(`No tiene suficientes ${this.nombre}.`);
             cantidad = verificarNumero(`Ingrese la cantidad a vender. Tiene actualmente ${this.cantidad}`);
         }
         alert(`Vendiste ${this.nombre} por ${this.precio * cantidad}${this.moneda}.\nTe quedan ${this.cantidad - cantidad}`);
@@ -148,7 +148,11 @@ const comprar = () => {
                 alert("Eligio una cantidad negativa, por favor vuelva a introducir la cantidad");
                 cantidad = verificarNumero(`Acaba de seleccionar ${productos[seleccion].nombre}, su cantidad actual es de ${productos[seleccion].cantidad} y su costo es de ${productos[seleccion].costo}, ¿Cuanto comprará?`)
             }
+            
             productos[seleccion].agregarStock(cantidad);
+            if(cantidad == 0){
+                continue;
+            }
             lista.cantidad.push(cantidad);
             lista.nombre.push(productos[seleccion].nombre);
             lista.precio.push(productos[seleccion].costo);
@@ -181,6 +185,9 @@ const vender = () => {
                 cantidad = verificarNumero(`Acaba de seleccionar ${productos[seleccion].nombre}, su cantidad actual es de ${productos[seleccion].cantidad} y su precio es de ${productos[seleccion].precio}, ¿Cuanto venderá?`)
             }
             productos[seleccion].venderProducto(cantidad);
+            if(cantidad == 0){
+                continue;
+            }
             lista.nombre.push(productos[seleccion].nombre);
             lista.cantidad.push(cantidad);
             lista.precio.push(productos[seleccion].precio);
