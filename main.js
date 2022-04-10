@@ -19,6 +19,7 @@ function verificarTexto(texto){
     return dato;
 }
 
+//Funcion para listar el Array con numeros
 function listarArray(array, fn, opcionAlterna){
     data = "";
     let i;
@@ -38,10 +39,17 @@ function listarArray(array, fn, opcionAlterna){
 const expresarLista = (objeto) => {
     let dato = "";
     dato += objeto.fecha + "\n";
+    dato += "Nombre        Cantidad        Precio\n" // Se utilizan 8 Espacios.
     for(let i = 0; i < objeto.cantidad.length; i++){
-        dato += `${objeto.nombre[i]}       ${objeto.cantidad[i]}     ${objeto.precio[i]}\n`;
+        //Se Calcula el espacio entre Textos para que la lista se vea bien, lamentablemente el tipo de letra usado no tiene el mismo tamaño y no queda bien, en console.log() se puede apreciar la idea
+        let cantidadEspaciado1 = " ";
+        let cantidadEspaciado2 = " ";
+        cantidadEspaciado1 = cantidadEspaciado1.repeat(14 - objeto.nombre[i].length);
+        cantidadEspaciado2 = cantidadEspaciado2.repeat(16 - objeto.cantidad[i].toString().length);
+        dato += `${objeto.nombre[i]}${cantidadEspaciado1}${objeto.cantidad[i]}${cantidadEspaciado2}${objeto.precio[i]}\n`;
     }
     dato += "Total:          " + objeto.precioFinal;
+    console.log(dato);
     return dato;
 }
 
@@ -94,9 +102,9 @@ class Producto{
     }
 
     venderProducto(cantidad){
-        while(this.cantidad - cantidad < 0){
-            alert(`No tiene suficientes ${this.nombre}`);
-            cantidad = verificarNumero("Ingrese la cantidad a vender.")
+        while(this.cantidad - cantidad < 0 || cantidad == 0){
+            alert(`No tiene suficientes ${this.nombre} o ha seleccionado 0 de cantidad.`);
+            cantidad = verificarNumero(`Ingrese la cantidad a vender. Tiene actualmente ${this.cantidad}`);
         }
         alert(`Vendiste ${this.nombre} por ${this.precio * cantidad}${this.moneda}.\nTe quedan ${this.cantidad - cantidad}`);
         this.cantidad -= cantidad;
@@ -106,7 +114,7 @@ class Producto{
 class Lista{
     constructor(){
         this.fecha = new Date();
-        this.fecha = this.fecha.toLocaleDateString();
+        this.fecha = this.fecha.toLocaleDateString() + " " + this.fecha.toTimeString();
         this.nombre = [];
         this.precio = [];
         this.cantidad = [];
@@ -147,6 +155,9 @@ const comprar = () => {
         } else if (seleccion == productos.length){
             crearProducto();
         } else if (seleccion == productos.length + 1){
+            if(!lista.nombre[0]){
+                return;
+            }
             break;
         } else {
             alert("Selecciono un codigo erroneo, vuelva a intentarlo.");
@@ -156,6 +167,7 @@ const comprar = () => {
 
     lista.calcularPrecioFinal();
     historialCompras.push(lista);
+    alert("Se agrego la Compra al HistorialCompras");
 }
 
 const vender = () => {
@@ -173,6 +185,9 @@ const vender = () => {
             lista.cantidad.push(cantidad);
             lista.precio.push(productos[seleccion].precio);
         } else if (seleccion == productos.length){
+            if(!lista.nombre[0]){
+                return;
+            }
             break;
         } else {
             alert("Selecciono un codigo erroneo, vuelva a intentarlo.");
@@ -181,6 +196,7 @@ const vender = () => {
     }
     lista.calcularPrecioFinal();
     historialVentas.push(lista);
+    alert("Se agrego la Venta al HistorialVentas");
 }
 
 const historialDeVentas = () => {
@@ -216,6 +232,8 @@ productos.push(new Producto("Pollo", "Carne", 0, 120, 50));
 productos.push(new Producto("Res", "Carne", 0, 180, 80));
 
 
+// Seccion principal.
+
 let seleccion = true
 while(seleccion){
     switch(prompt("Buenos dias.\n¿Que desea hacer hoy?\n1. Comprar\n2. Vender\n3. Agregar Producto\n4. Ver historial de Compras\n5. Ver historial de Ventas\n6. Salir")){
@@ -233,6 +251,7 @@ while(seleccion){
             break;
         case "4":
             alert("Ha seleccionado ver historial de Compras");
+            historialDeCompras()
             break;
         case "5":
             alert("Ha seleccionado ver historial de Ventas");
