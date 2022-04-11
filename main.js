@@ -1,8 +1,9 @@
+//Variables generales
 const categorias = ["Carne", "Verdura"];
 const productos = [];
 const historialCompras = [];
 const historialVentas = [];
-
+// Funciones generales
 const verificarNumero = (texto) => {
     let dato = parseInt(prompt(texto));
     while(isNaN(dato)){
@@ -19,14 +20,24 @@ const verificarTexto = (texto) => {
     return dato;
 }
 
+//Funciones para Listar en alertas
 //Funcion para listar el Array con numeros
-const listarArray = (array, fn, opcionAlterna) => {
+const listarArray = (array, fn, opcionAlterna, sinNumeros) => {
     data = "";
     let i;
-    for(i = 0; i < array.length ; i++){
-        data = data + (i+1) + ". " + fn(array[i]) + "\n";
+    if(sinNumeros == undefined){
+        for(i = 0; i < array.length ; i++){
+            data = data + (i+1) + ". " + fn(array[i]) + "\n";
+        }
+    } else {
+        for(i = 0; i < array.length ; i++){
+            data = data + fn(array[i]) + "\n";
+        } 
     }
-    if(!(opcionAlterna == undefined)){
+
+    if(opcionAlterna == "noSalir") {
+        return data;
+    } else if(!(opcionAlterna == undefined)){
         data = data + (i + 1) + ". " + opcionAlterna + " \n";
         data = data + (i + 2) + ". Salir";
     } else {
@@ -53,6 +64,18 @@ const expresarLista = (objeto) => {
     return dato;
 }
 
+const expresarProducto = (producto) => {
+    let dato = "";
+    let claves = Object.keys(producto);
+    let valores = Object.values(producto);
+    let i;
+    for(i = 0; i < claves.length; i++){
+        dato = dato + claves[i] + "\: " + valores[i] + "\n";
+    }
+    return dato;
+}
+
+//Clases usadas en el programa
 class Producto{
     constructor(nombre, categoria, cantidad, precio, costo){
         let existe = false;
@@ -108,6 +131,7 @@ class Producto{
         }
         alert(`Vendiste ${this.nombre} por ${this.precio * cantidad}${this.moneda}.\nTe quedan ${this.cantidad - cantidad}`);
         this.cantidad -= cantidad;
+        return cantidad;
     }
 }
 
@@ -128,6 +152,7 @@ class Lista{
     }
 }
 
+//Opciones del menu principal
 const crearProducto = () => {
     let nombre = verificarTexto("Ingrese el nombre del producto");
     let categoria = verificarTexto("Ingrese la categoria del producto");
@@ -184,7 +209,7 @@ const vender = () => {
                 alert("Eligio una cantidad negativa, por favor vuelva a introducir la cantidad");
                 cantidad = verificarNumero(`Acaba de seleccionar ${productos[seleccion].nombre}, su cantidad actual es de ${productos[seleccion].cantidad} y su precio es de ${productos[seleccion].precio}, ¿Cuanto venderá?`)
             }
-            productos[seleccion].venderProducto(cantidad);
+            cantidad = productos[seleccion].venderProducto(cantidad);
             if(cantidad == 0){
                 continue;
             }
@@ -206,12 +231,88 @@ const vender = () => {
     alert("Se agrego la Venta al HistorialVentas");
 }
 
+const modificarProducto = () => {
+    while(true){
+        seleccion = verificarNumero(`¿Que producto desea modificar?.\n${listarArray(productos, el => el.nombre)}`) - 1;
+        if(productos[seleccion]){
+            alert(`Acaba de seleccionar\n${expresarProducto(productos[seleccion])}`);
+            while(true){
+                let seleccion2 = verificarNumero(`¿Que desea hacer con ${productos[seleccion].nombre}?\n1. Modificar Nombre\n2. Modificar Categoria\n3. Modificar Precio\n4. Modificar Costo\n5. Salir`);
+                claves = Object.keys(productos[seleccion]);
+                switch(seleccion2){
+                    case 1:
+                        productos[seleccion].nombre = verificarTexto(`¿Que nombre desea asignarle a ${productos[seleccion].nombre}?`);
+                        alert(`Se le ha asignado ${productos[seleccion].nombre}`);
+                        break;
+                    case 2:
+                        let nuevaCategoria = verificarTexto(`¿Que categoria desea asignarle a ${productos[seleccion].nombre}?`)
+                        if(categorias.includes(nuevaCategoria)){
+                            productos[seleccion].categoria = nuevaCategoria;
+                            alert(`Se asigno ${productos[seleccion].categoria} a ${productos[seleccion].nombre}`);
+                        } else {
+                            if(confirm(`No se encontro la categoria ingresada. ¿Desea agregarla?`)){
+                                categorias.push(nuevaCategoria);
+                                productos[seleccion].categoria = nuevaCategoria;
+                                alert(`Se asigno ${productos[seleccion].categoria} a ${productos[seleccion].nombre}`);
+                            }
+                        }
+                        break;
+                    case 3:
+                        let nuevoPrecio = verificarNumero(`Ingrese nuevo precio para ${productos[seleccion].nombre}`);
+                        while(nuevoPrecio < 0){
+                            alert("No puede asignar un precio menor a 0")
+                            nuevoPrecio = verificarNumero(`Ingrese nuevo precio para ${productos[seleccion].nombre}`);
+                        }
+                        productos[seleccion].precio = nuevoPrecio;
+                        alert(`Se ha asignado ${productos[seleccion].precio} a ${productos[seleccion].nombre}`);
+                        break;
+                    case 4:
+                        let nuevoCosto = verificarNumero(`Ingrese nuevo costo para ${productos[seleccion].nombre}`);
+                        while(nuevoCosto < 0){
+                            alert("No puede asignar un costo menor a 0")
+                            nuevoCosto = verificarNumero(`Ingrese nuevo precio para ${productos[seleccion].nombre}`);
+                        }
+                        productos[seleccion].costo = nuevoCosto;
+                        alert(`Se ha asignado ${productos[seleccion].costo} a ${productos[seleccion].nombre}`);
+                        break;
+                    case 5:
+                        break;
+                    default:
+                        alert("Se ingreso un codigo erroneo, por favor vuela a intentarlo.");
+                }
+                if(seleccion2 == 5){
+                    break;
+                }
+            }            
+        } else if (seleccion == productos.length){
+            break;
+        }  else {
+            alert("Selecciono un codigo erroneo, vuelva a intentarlo.");
+            continue;
+        }
+    }  
+}
+
 const historialDeVentas = () => {
     while(true){
-        let seleccion = verificarNumero(`${listarArray(historialVentas, el => el.fecha)}`) - 1;
+        let seleccion = verificarNumero(`${listarArray(historialVentas, el => el.fecha, "Filtrar por nombre")}`) - 1;
         if(historialVentas[seleccion]){
             alert(expresarLista(historialVentas[seleccion]));
         } else if(seleccion == historialVentas.length){
+            let filtro = verificarTexto("Escriba el nombre por el que desea filtrar\n" + listarArray(productos, el => el.nombre)).toLowerCase();
+            busqueda = historialCompras.filter(el => {
+                if(el.nombre.find(el => el.toLowerCase() == filtro) == undefined){
+                    return false
+                } else {
+                    return true;
+                }
+            });
+            if(busqueda.length != 0){
+                alert(`Se encontraron las siguientes listas\n${listarArray(busqueda, el => el.fecha, "noSalir")}`)
+            } else {
+                alert("No se encontraron listas con el nombre entregado")
+            }
+        } else if(seleccion == historialVentas.length + 1){
             break;
         } else {
             alert("Selecciono un codigo erroneo, vuelva a intentarlo.")
@@ -222,10 +323,24 @@ const historialDeVentas = () => {
 
 const historialDeCompras = () => {
     while(true){
-        let seleccion = verificarNumero(`${listarArray(historialCompras, el => el.fecha)}`) - 1;
+        let seleccion = verificarNumero(`${listarArray(historialCompras, el => el.fecha, "Filtrar por nombre")}`) - 1;
         if(historialCompras[seleccion]){
             alert(expresarLista(historialCompras[seleccion]));
         } else if(seleccion == historialCompras.length){
+            let filtro = verificarTexto("Escriba el nombre por el que desea filtrar\n" + listarArray(productos, el => el.nombre)).toLowerCase();
+            busqueda = historialCompras.filter(el => {
+                if(el.nombre.find(el => el.toLowerCase() == filtro) == undefined){
+                    return false
+                } else {
+                    return true;
+                }
+            });
+            if(busqueda.length != 0){
+                alert(`Se encontraron las siguientes listas\n${listarArray(busqueda, el => el.fecha, "noSalir", true)}`)
+            } else {
+                alert("No se encontraron listas con el nombre entregado")
+            }
+        } else if(seleccion == historialCompras.length + 1){
             break;
         } else {
             alert("Selecciono un codigo erroneo, vuelva a intentarlo.")
@@ -243,7 +358,7 @@ productos.push(new Producto("Res", "Carne", 0, 180, 80));
 
 let seleccion = true
 while(seleccion){
-    switch(prompt("Buenos dias.\n¿Que desea hacer hoy?\n1. Comprar\n2. Vender\n3. Agregar Producto\n4. Ver historial de Compras\n5. Ver historial de Ventas\n6. Salir")){
+    switch(prompt("Buenos dias.\n¿Que desea hacer hoy?\n1. Comprar\n2. Vender\n3. Agregar Producto\n4. Modificar Producto\n5. Ver historial de Compras\n6. Ver historial de Ventas\n7. Salir")){
         case "1":
             alert("Ha seleccionado Comprar.");
             comprar();
@@ -257,14 +372,18 @@ while(seleccion){
             crearProducto();
             break;
         case "4":
-            alert("Ha seleccionado ver historial de Compras");
-            historialDeCompras()
+            alert("Ha seleccionado Modificar Producto.");
+            modificarProducto();
             break;
         case "5":
+            alert("Ha seleccionado ver historial de Compras");
+            historialDeCompras();
+            break;
+        case "6":
             alert("Ha seleccionado ver historial de Ventas");
             historialDeVentas();
             break;
-        case "6":
+        case "7":
             alert("Ha seleccionado Salir.");
             seleccion = false;
             break;
