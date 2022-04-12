@@ -25,16 +25,17 @@ const verificarTexto = (texto) => {
 const listarArray = (array, fn, opcionAlterna, sinNumeros) => {
     data = "";
     let i;
-    if(sinNumeros == undefined){
+    if(sinNumeros == "sinNumeros"){
+        for(i = 0; i < array.length ; i++){
+            data = data + fn(array[i]) + "\n";
+        }     
+    } else {
         for(i = 0; i < array.length ; i++){
             data = data + (i+1) + ". " + fn(array[i]) + "\n";
         }
-    } else {
-        for(i = 0; i < array.length ; i++){
-            data = data + fn(array[i]) + "\n";
-        } 
     }
 
+   
     if(opcionAlterna == "noSalir") {
         return data;
     } else if(!(opcionAlterna == undefined)){
@@ -299,7 +300,7 @@ const historialDeVentas = () => {
         if(historialVentas[seleccion]){
             alert(expresarLista(historialVentas[seleccion]));
         } else if(seleccion == historialVentas.length){
-            let filtro = verificarTexto("Escriba el nombre por el que desea filtrar\n" + listarArray(productos, el => el.nombre)).toLowerCase();
+            let filtro = verificarTexto("Escriba el nombre por el que desea filtrar\n" + listarArray(productos, el => el.nombre,"noSalir","sinNumeros")).toLowerCase();
             busqueda = historialCompras.filter(el => {
                 if(el.nombre.find(el => el.toLowerCase() == filtro) == undefined){
                     return false
@@ -308,7 +309,7 @@ const historialDeVentas = () => {
                 }
             });
             if(busqueda.length != 0){
-                alert(`Se encontraron las siguientes listas\n${listarArray(busqueda, el => el.fecha, "noSalir")}`)
+                alert(`Se encontraron las siguientes listas\n${listarArray(busqueda, el => el.fecha,"noSalir","sinNumeros")}`)
             } else {
                 alert("No se encontraron listas con el nombre entregado")
             }
@@ -327,7 +328,7 @@ const historialDeCompras = () => {
         if(historialCompras[seleccion]){
             alert(expresarLista(historialCompras[seleccion]));
         } else if(seleccion == historialCompras.length){
-            let filtro = verificarTexto("Escriba el nombre por el que desea filtrar\n" + listarArray(productos, el => el.nombre)).toLowerCase();
+            let filtro = verificarTexto("Escriba el nombre por el que desea filtrar\n" + listarArray(productos, el => el.nombre,"noSalir","sinNumeros")).toLowerCase();
             busqueda = historialCompras.filter(el => {
                 if(el.nombre.find(el => el.toLowerCase() == filtro) == undefined){
                     return false
@@ -336,7 +337,7 @@ const historialDeCompras = () => {
                 }
             });
             if(busqueda.length != 0){
-                alert(`Se encontraron las siguientes listas\n${listarArray(busqueda, el => el.fecha, "noSalir", true)}`)
+                alert(`Se encontraron las siguientes listas\n${listarArray(busqueda, el => el.fecha,"noSalir","sinNumeros")}`)
             } else {
                 alert("No se encontraron listas con el nombre entregado")
             }
