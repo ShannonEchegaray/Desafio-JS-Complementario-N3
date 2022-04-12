@@ -349,6 +349,8 @@ const historialDeCompras = () => {
     } 
 }
 
+// Pusheo algunos productos en la lista.
+
 productos.push(new Producto("Lechuga", "Verdura", 0, 50, 20));
 productos.push(new Producto("Pollo", "Carne", 0, 120, 50));
 productos.push(new Producto("Res", "Carne", 0, 180, 80));
