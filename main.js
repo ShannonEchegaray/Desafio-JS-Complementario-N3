@@ -141,6 +141,7 @@ class Lista{
         this.fecha = new Date();
         this.fecha = this.fecha.toLocaleDateString() + " " + this.fecha.toTimeString();
         this.nombre = [];
+        this.categoria = [];
         this.precio = [];
         this.cantidad = [];
         this.precioFinal = 0;
@@ -180,6 +181,7 @@ const comprar = () => {
                 continue;
             }
             lista.cantidad.push(cantidad);
+            lista.categoria.push(productos[seleccion].categoria)
             lista.nombre.push(productos[seleccion].nombre);
             lista.precio.push(productos[seleccion].costo);
         } else if (seleccion == productos.length){
@@ -205,17 +207,18 @@ const vender = () => {
     while(true){
         let seleccion = verificarNumero(`Que desea vender.\n${listarArray(productos, el => el.nombre)}`) - 1;
         if(productos[seleccion]){
-            let cantidad = verificarNumero(`Acaba de seleccionar ${productos[seleccion].nombre}, su cantidad actual es de ${productos[seleccion].cantidad} y su precio es de ${productos[seleccion].precio}, ¿Cuanto venderá?`)
+            let cantidad = verificarNumero(`Acaba de seleccionar ${productos[seleccion].nombre}, su cantidad actual es de ${productos[seleccion].cantidad} y su precio es de ${productos[seleccion].precio}, ¿Cuanto venderá?`);
             while(cantidad < 0){
                 alert("Eligio una cantidad negativa, por favor vuelva a introducir la cantidad");
-                cantidad = verificarNumero(`Acaba de seleccionar ${productos[seleccion].nombre}, su cantidad actual es de ${productos[seleccion].cantidad} y su precio es de ${productos[seleccion].precio}, ¿Cuanto venderá?`)
+                cantidad = verificarNumero(`Acaba de seleccionar ${productos[seleccion].nombre}, su cantidad actual es de ${productos[seleccion].cantidad} y su precio es de ${productos[seleccion].precio}, ¿Cuanto venderá?`);
             }
             cantidad = productos[seleccion].venderProducto(cantidad);
             if(cantidad == 0){
                 continue;
             }
-            lista.nombre.push(productos[seleccion].nombre);
             lista.cantidad.push(cantidad);
+            lista.nombre.push(productos[seleccion].nombre);
+            lista.categoria.push(productos[seleccion].categoria);
             lista.precio.push(productos[seleccion].precio);
         } else if (seleccion == productos.length){
             if(!lista.nombre[0]){
@@ -299,7 +302,7 @@ const filtrarLista = (historial) => {
     while(true){
         let filtro;
         let busqueda;
-        switch(verificarNumero("Seleccione la Opcion por la cual filtrar.\n1. Nombre\n2. Mayor a Precio Final\n3. Salir")){
+        switch(verificarNumero("Seleccione la Opcion por la cual filtrar.\n1. Nombre\n2. Mayor a Precio Final\n3. Categoria\n4. Salir")){
             case 1:
                 // Filtro por nombre
                 filtro = verificarTexto("Escriba el nombre por el que desea filtrar\n" + listarArray(productos, el => el.nombre,"noSalir","sinNumeros")).toLowerCase();
@@ -329,6 +332,22 @@ const filtrarLista = (historial) => {
                 break;
 
             case 3:
+                // Filtro por Categoria
+                filtro = verificarTexto("Escriba la categoria por la que desea filtrar\n" + listarArray(categorias, el => el,"noSalir","sinNumeros")).toLowerCase();
+                busqueda = historial.filter(el => {
+                    if(el.categoria.find(el => el.toLowerCase() == filtro) == undefined){
+                        return false;
+                    } else {
+                        return true;
+                    }
+                });
+                if(busqueda.length != 0){
+                    alert(`Se encontraron las siguientes listas\n${listarArray(busqueda, el => el.fecha,"noSalir","sinNumeros")}`)
+                } else {
+                    alert("No se encontraron listas con la categoria entregada")
+                }
+                break;
+            case 4:
                 return;
             default:
                 break;   
