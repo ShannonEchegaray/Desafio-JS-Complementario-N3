@@ -7,7 +7,7 @@ const historialVentas = [];
 const verificarNumero = (texto) => {
     let dato = parseInt(prompt(texto));
     while(isNaN(dato)){
-        dato = parseInt(prompt(`El dato introducido es incorrecto. ${texto}`));
+        dato = parseInt(prompt(`El dato introducido es incorrecto.\n${texto}`));
     }
     return dato;
 }
@@ -15,7 +15,7 @@ const verificarNumero = (texto) => {
 const verificarTexto = (texto) => {
     let dato = prompt(texto);
     while(dato == null || dato.trim() == ""){
-        dato = prompt(`El dato introducido es incorrecto. ${texto}`)
+        dato = prompt(`El dato introducido es incorrecto.\n${texto}`)
     }
     return dato;
 }
@@ -294,25 +294,55 @@ const modificarProducto = () => {
     }  
 }
 
+const filtrarLista = (historial) => {
+
+    while(true){
+        let filtro;
+        let busqueda;
+        switch(verificarNumero("Seleccione la Opcion por la cual filtrar.\n1. Nombre\n2. Mayor a Precio Final\n3. Salir")){
+            case 1:
+                // Filtro por nombre
+                filtro = verificarTexto("Escriba el nombre por el que desea filtrar\n" + listarArray(productos, el => el.nombre,"noSalir","sinNumeros")).toLowerCase();
+                busqueda = historial.filter(el => {
+                    if(el.nombre.find(el => el.toLowerCase() == filtro) == undefined){
+                        return false;
+                    } else {
+                        return true;
+                    }
+                });
+                if(busqueda.length != 0){
+                    alert(`Se encontraron las siguientes listas\n${listarArray(busqueda, el => el.fecha,"noSalir","sinNumeros")}`)
+                } else {
+                    alert("No se encontraron listas con el nombre entregado")
+                }
+                break;
+
+            case 2:
+                // Filtro por mayor a precio final
+                filtro = verificarNumero("Escriba el precio por el que desea filtrar");
+                busqueda = historial.filter(el => el.precioFinal > filtro);
+                if(busqueda.length != 0){
+                    alert(`Se encontraron las siguientes listas\n${listarArray(busqueda, el => el.fecha,"noSalir","sinNumeros")}`)
+                } else {
+                    alert("No se encontraron listas con el precio entregado");
+                }
+                break;
+
+            case 3:
+                return;
+            default:
+                break;   
+        }
+    }
+}
+
 const historialDeVentas = () => {
     while(true){
-        let seleccion = verificarNumero(`${listarArray(historialVentas, el => el.fecha, "Filtrar por nombre")}`) - 1;
+        let seleccion = verificarNumero(`${listarArray(historialVentas, el => el.fecha, "Filtrar")}`) - 1;
         if(historialVentas[seleccion]){
             alert(expresarLista(historialVentas[seleccion]));
         } else if(seleccion == historialVentas.length){
-            let filtro = verificarTexto("Escriba el nombre por el que desea filtrar\n" + listarArray(productos, el => el.nombre,"noSalir","sinNumeros")).toLowerCase();
-            busqueda = historialCompras.filter(el => {
-                if(el.nombre.find(el => el.toLowerCase() == filtro) == undefined){
-                    return false
-                } else {
-                    return true;
-                }
-            });
-            if(busqueda.length != 0){
-                alert(`Se encontraron las siguientes listas\n${listarArray(busqueda, el => el.fecha,"noSalir","sinNumeros")}`)
-            } else {
-                alert("No se encontraron listas con el nombre entregado")
-            }
+            filtrarLista(historialVentas)
         } else if(seleccion == historialVentas.length + 1){
             break;
         } else {
@@ -324,23 +354,11 @@ const historialDeVentas = () => {
 
 const historialDeCompras = () => {
     while(true){
-        let seleccion = verificarNumero(`${listarArray(historialCompras, el => el.fecha, "Filtrar por nombre")}`) - 1;
+        let seleccion = verificarNumero(`${listarArray(historialCompras, el => el.fecha, "Filtrar")}`) - 1;
         if(historialCompras[seleccion]){
             alert(expresarLista(historialCompras[seleccion]));
         } else if(seleccion == historialCompras.length){
-            let filtro = verificarTexto("Escriba el nombre por el que desea filtrar\n" + listarArray(productos, el => el.nombre,"noSalir","sinNumeros")).toLowerCase();
-            busqueda = historialCompras.filter(el => {
-                if(el.nombre.find(el => el.toLowerCase() == filtro) == undefined){
-                    return false
-                } else {
-                    return true;
-                }
-            });
-            if(busqueda.length != 0){
-                alert(`Se encontraron las siguientes listas\n${listarArray(busqueda, el => el.fecha,"noSalir","sinNumeros")}`)
-            } else {
-                alert("No se encontraron listas con el nombre entregado")
-            }
+            filtrarLista(historialCompras)
         } else if(seleccion == historialCompras.length + 1){
             break;
         } else {
