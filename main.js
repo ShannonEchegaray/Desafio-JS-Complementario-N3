@@ -437,3 +437,20 @@ while(seleccion){
     }
 }
 
+let volcar = document.getElementById("volcar");
+
+for(const producto of productos){
+    let nodo = document.createElement("div");
+    nodo.setAttribute("class", "card");
+    nodo.innerHTML = `<div class='card__body'>
+    <h5 class='card__title'>${producto.nombre}</h5>
+    <p class='card__text'>Categoria: ${producto.categoria}<br>
+      Cantidad: ${producto.cantidad}<br>
+      Precio: ${producto.precio}<br>
+      Costo: ${producto.costo}
+    </p>
+    <a href='#' class='card__button'>Agregar</a>
+    <a href='#' class='card__button'>Vender</a>
+    </div>`;
+    volcar.appendChild(nodo);
+}
