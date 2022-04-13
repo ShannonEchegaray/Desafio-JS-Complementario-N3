@@ -6,11 +6,13 @@
 .body{
     background-color: #f4f4f4;
     font-family: Roboto;
+    transition: 0.3s ease;
 }
 
 .body--dark{
     background-color: #202020;
     font-family: Roboto;
+    transition: 0.3s ease;
 }
 
 .layout{
@@ -21,12 +23,14 @@
     background-color: #77f;
     color: white;
     padding: 5px;
+    transition: 0.3s ease;
 }
 
 .header--dark{
     background-color: #f77;
     color: #eee;
     padding: 5px;
+    transition: 0.3s ease;
 }
 
 .header__title{
@@ -47,6 +51,7 @@
     background-color: #fff;
     width: 12em;
     padding: 10px;
+    transition: 0.3s ease;
 }
 
 .card--dark{
@@ -58,6 +63,7 @@
     width: 12em;
     padding: 10px;
     color: #eee;
+    transition: 0.3s ease;
 }
 
 .card__title{
@@ -78,6 +84,7 @@
     color: #fff;
     text-decoration: none;
     border-radius: 0.2em;
+    transition: 0.3s ease;
 }
 
 .card__button--dark{
@@ -86,6 +93,7 @@
     color: #eee;
     text-decoration: none;
     border-radius: 0.2em;
+    transition: 0.3s ease;
 }
 
 .footer{
@@ -100,9 +108,11 @@
     font-size: 1.2em;
     text-align: center;
     color: #eee;
+    transition: 0.3s ease;
 }
 
 .footer > h6{
     font-size: 1.2em;
     text-align: center;
+    transition: 0.3s ease;
 }
