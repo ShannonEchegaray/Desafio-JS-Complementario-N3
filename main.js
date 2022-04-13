@@ -436,21 +436,69 @@ while(seleccion){
             break;
     }
 }
+let darkMode = false;
 
-let volcar = document.getElementById("volcar");
+function renderProductos(){
+    let volcar = document.getElementById("volcar");
+    while(volcar.firstChild) {
+        volcar.removeChild(volcar.firstChild);
+    }
+    
+    for(const producto of productos){
+        let nodo = document.createElement("div");
+        if(darkMode){
+            nodo.setAttribute("class", "card--dark");
+            nodo.innerHTML = `<div class='card__body'>
+            <h5 class='card__title'>${producto.nombre}</h5>
+            <p class='card__text'>Categoria: ${producto.categoria}<br>
+            Cantidad: ${producto.cantidad}<br>
+            Precio: ${producto.precio}<br>
+            Costo: ${producto.costo}
+            </p>
+            <a href='#' class='card__button--dark'>Agregar</a>
+            <a href='#' class='card__button--dark'>Vender</a>
+            </div>`;
+        } else {
+            nodo.setAttribute("class", "card");
+            nodo.innerHTML = `<div class='card__body'>
+            <h5 class='card__title'>${producto.nombre}</h5>
+            <p class='card__text'>Categoria: ${producto.categoria}<br>
+            Cantidad: ${producto.cantidad}<br>
+            Precio: ${producto.precio}<br>
+            Costo: ${producto.costo}
+            </p>
+            <a href='#' class='card__button'>Agregar</a>
+            <a href='#' class='card__button'>Vender</a>
+            </div>`;
+        }        
+        volcar.appendChild(nodo);
+    }    
+}
 
-for(const producto of productos){
-    let nodo = document.createElement("div");
-    nodo.setAttribute("class", "card");
-    nodo.innerHTML = `<div class='card__body'>
-    <h5 class='card__title'>${producto.nombre}</h5>
-    <p class='card__text'>Categoria: ${producto.categoria}<br>
-      Cantidad: ${producto.cantidad}<br>
-      Precio: ${producto.precio}<br>
-      Costo: ${producto.costo}
-    </p>
-    <a href='#' class='card__button'>Agregar</a>
-    <a href='#' class='card__button'>Vender</a>
-    </div>`;
-    volcar.appendChild(nodo);
+function setDark(){
+    const body = document.querySelector("body");
+    body.classList.remove("body");
+    body.classList.add("body--dark");
+    const header = document.querySelector("header");
+    header.classList.remove("header");
+    header.classList.add("header--dark");
+    const footer = document.querySelector("footer");
+    footer.classList.remove("footer");
+    footer.classList.add("footer--dark");
+    darkMode = true;
+    renderProductos()
+}
+
+function setLight(){
+    const body = document.querySelector("body");
+    body.classList.remove("body--dark");
+    body.classList.add("body");
+    const header = document.querySelector("header");
+    header.classList.remove("header--dark");
+    header.classList.add("header");
+    const footer = document.querySelector("footer");
+    footer.classList.remove("footer--dark");
+    footer.classList.add("footer");
+    darkMode = false;
+    renderProductos()
 }
