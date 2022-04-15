@@ -396,7 +396,7 @@ productos.push(new Producto("Res", "Carne", 0, 180, 80));
 
 // Seccion principal.
 
-let seleccion = true
+/* let seleccion = true
 while(seleccion){
     switch(prompt("Buenos dias.\n¿Que desea hacer hoy?\n1. Comprar\n2. Vender\n3. Agregar Producto\n4. Modificar Producto\n5. Ver historial de Compras\n6. Ver historial de Ventas\n7. Salir")){
         case "1":
@@ -435,10 +435,17 @@ while(seleccion){
             alert("Ha seleccionado cualquier cosa señor/a.");
             break;
     }
-}
+} */
 let darkMode = false;
-
 function renderProductos(){
+
+    const verificarModo = (clase) => {
+        if(darkMode){
+            clase += "--dark"
+            return clase;
+        }
+        return clase;
+    }
     let volcar = document.getElementById("volcar");
     while(volcar.firstChild) {
         volcar.removeChild(volcar.firstChild);
@@ -446,31 +453,35 @@ function renderProductos(){
     
     for(const producto of productos){
         let nodo = document.createElement("div");
-        if(darkMode){
-            nodo.setAttribute("class", "card--dark");
-            nodo.innerHTML = `<div class='card__body'>
-            <h5 class='card__title'>${producto.nombre}</h5>
-            <p class='card__text'>Categoria: ${producto.categoria}<br>
-            Cantidad: ${producto.cantidad}<br>
-            Precio: ${producto.precio}<br>
-            Costo: ${producto.costo}
-            </p>
-            <a href='#' class='card__button--dark'>Agregar</a>
-            <a href='#' class='card__button--dark'>Vender</a>
-            </div>`;
-        } else {
-            nodo.setAttribute("class", "card");
-            nodo.innerHTML = `<div class='card__body'>
-            <h5 class='card__title'>${producto.nombre}</h5>
-            <p class='card__text'>Categoria: ${producto.categoria}<br>
-            Cantidad: ${producto.cantidad}<br>
-            Precio: ${producto.precio}<br>
-            Costo: ${producto.costo}
-            </p>
-            <a href='#' class='card__button'>Agregar</a>
-            <a href='#' class='card__button'>Vender</a>
-            </div>`;
-        }        
+        nodo.setAttribute("class", verificarModo("card"));
+        nodo.innerHTML = `<div class='card__body'>
+        <h5 class='card__title'>${producto.nombre}</h5>
+        <p class='card__text'>Categoria: ${producto.categoria}<br>
+        Cantidad: ${producto.cantidad}<br>
+        Precio: ${producto.precio}<br>
+        Costo: ${producto.costo}
+        </p>
+        </div>`;
+
+        const div = nodo.firstChild;
+        botonAgregar = document.createElement("a");
+        botonVender = document.createElement("a");
+        botonAgregar.innerText = "Agregar";
+        botonAgregar.classList.add(verificarModo("card__button"))
+        botonAgregar.setAttribute("href", "#")
+        botonVender.innerText = "Vender";
+        botonVender.classList.add(verificarModo("card__button"))
+        botonVender.setAttribute("href", "#")
+
+        botonAgregar.onclick = () => {
+            console.log("Hola");
+        }
+        botonVender.onclick = () => {
+            console.log("Hola");
+        }
+        div.appendChild(botonAgregar);
+        div.appendChild(botonVender);
+
         volcar.appendChild(nodo);
     }    
 }
@@ -501,4 +512,13 @@ function setLight(){
     footer.classList.add("footer");
     darkMode = false;
     renderProductos()
+}
+
+renderProductos();
+document.querySelector("#modoPagina").onclick = () => {
+    if(darkMode){
+        setLight();
+    } else {
+        setDark();
+    }
 }
