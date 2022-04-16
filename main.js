@@ -116,24 +116,12 @@ class Producto{
         this.moneda = "ARS"
     }
 
-    calcularBeneficio(){
-        alert(`El beneficio costo-precio de ${this.nombre} es de ${this.precio - this.costo}`);
-        return this.precio - this.costo;
-    }
-
     agregarStock(cantidad){
         this.cantidad += cantidad;
-        alert(`Se ha agregado la cantidad de ${cantidad} por el costo de ${this.costo * cantidad}${this.moneda}. Tu cantidad actual de ${this.nombre} es de ${this.cantidad}`);
     }
 
     venderProducto(cantidad){
-        while(this.cantidad - cantidad < 0){
-            alert(`No tiene suficientes ${this.nombre}.`);
-            cantidad = verificarNumero(`Ingrese la cantidad a vender. Tiene actualmente ${this.cantidad}`);
-        }
-        alert(`Vendiste ${this.nombre} por ${this.precio * cantidad}${this.moneda}.\nTe quedan ${this.cantidad - cantidad}`);
         this.cantidad -= cantidad;
-        return cantidad;
     }
 }
 
@@ -141,17 +129,12 @@ class Lista{
     constructor(){
         this.fecha = new Date();
         this.fecha = this.fecha.toLocaleDateString() + " " + this.fecha.toTimeString();
+        this.id = [];
         this.nombre = [];
         this.categoria = [];
         this.precio = [];
         this.cantidad = [];
         this.precioFinal = 0;
-    }
-
-    calcularPrecioFinal(){
-        for(let i = 0; i < this.cantidad.length; i++){
-            this.precioFinal += this.cantidad[i]*this.precio[i];
-        }
     }
 }
 
@@ -240,12 +223,16 @@ document.querySelector("#modoPagina").onclick = () => {
     }
 }
 
-document.querySelector("#comprar").onclick = () => {
-
+const crearAlerta = (comprar) => {
     const cerrarAlerta = () =>{
         for(let i = 0 ; i < 2 ; i++){
             document.body.lastChild.remove();
         }
+    }
+
+    //Verificando que no exista mas de 1 alerta;
+    if(document.querySelector(".alert") || document.querySelector(".alert--dark")){
+        cerrarAlerta();
     }
 
     const alerta__fondo = document.createElement("div");
@@ -264,10 +251,22 @@ document.querySelector("#comprar").onclick = () => {
 
     //Agregando Parrafo y Boton al Titulo
     let alerta__title__parrafo = document.createElement("p");
-    alerta__title__parrafo.innerText = "Comprar Productos";
+    if(comprar){
+        alerta__title__parrafo.innerText = "Comprar Productos";
+    } else {
+        alerta__title__parrafo.innerText = "Vender Productos";
+    }
 
     let alerta__title__closeButton = document.createElement("a");
-    alerta__title__closeButton.innerHTML = "<img src='./img/x.svg' class='alert__button--close'>"
+    if(darkMode){
+        alerta__title__closeButton.innerHTML = `<svg class="alert__button--closeDark" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+      </svg>`
+    } else {
+        alerta__title__closeButton.innerHTML = `<svg class="alert__button--close" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+      </svg>`
+    }
     alerta__title__closeButton.setAttribute("href", "#");
     alerta__title__closeButton.onclick = (e) => {
         e.preventDefault();
@@ -292,8 +291,29 @@ document.querySelector("#comprar").onclick = () => {
 
     alerta__tabla__encabezado = document.createElement("div");
     alerta__tabla__encabezado.classList.add("alert__table__enc")
-    alerta__tabla__encabezado.innerText = "Productos";
     alerta__tabla.appendChild(alerta__tabla__encabezado);
+
+    encabezado1 = document.createElement("p");
+    encabezado2 = document.createElement("p");
+    encabezado3 = document.createElement("p");
+    encabezado4 = document.createElement("p");
+    encabezado5 = document.createElement("p");
+    encabezado1.classList.add("alert__table__enc__text");
+    encabezado2.classList.add("alert__table__enc__text");
+    encabezado3.classList.add("alert__table__enc__text");
+    encabezado4.classList.add("alert__table__enc__text");
+    encabezado5.classList.add("alert__table__enc__text");
+    encabezado1.innerText = "Cantidad";
+    encabezado2.innerText = "ID";
+    encabezado3.innerText = "Nombre";
+    encabezado4.innerText = "Precio";
+    encabezado5.innerText = "Subtotal";
+
+    alerta__tabla__encabezado.appendChild(encabezado1);
+    alerta__tabla__encabezado.appendChild(encabezado2);
+    alerta__tabla__encabezado.appendChild(encabezado3);
+    alerta__tabla__encabezado.appendChild(encabezado4);
+    alerta__tabla__encabezado.appendChild(encabezado5);
 
     //Agregando productos a la tabla
     for(const producto of productos){
@@ -353,12 +373,24 @@ document.querySelector("#comprar").onclick = () => {
         } else {
             let nuevaLista = new Lista();
             for(const filas of tabla){
-                nuevaLista.nombre.push(filas[2].innerText);
-                nuevaLista.cantidad.push(filas[0].value);
-                nuevaLista.precio.push(filas[3].innerText);
+                if(filas.lastChild.innerText != 0){
+                    let id = filas.childNodes[1].innerText;
+                    let nombre = filas.childNodes[2].innerText;
+                    let cantidad = parseInt(filas.childNodes[0].firstChild.value);
+                    let precio = parseInt(filas.childNodes[3].innerText)
+
+                    nuevaLista.id.push(id)
+                    nuevaLista.nombre.push(nombre);
+                    nuevaLista.cantidad.push(cantidad);
+                    nuevaLista.precio.push(precio);
+                    nuevaLista.precioFinal = precioFinal;
+
+                    productos.find(el => el.nombre.toLowerCase() == nombre.toLowerCase()).agregarStock(cantidad);
+                }
             }
             historialCompras.push(nuevaLista);
             cerrarAlerta();
+            renderProductos();
         }
     }
     alerta.appendChild(alerta__boton__comprar);
@@ -367,6 +399,10 @@ document.querySelector("#comprar").onclick = () => {
     document.body.appendChild(alerta);
 }
 
-document.querySelector("#vender").onclick = () => {
+document.querySelector("#comprar").onclick = () => {
+    crearAlerta(true);
+}
 
+document.querySelector("#vender").onclick = () => {
+    crearAlerta();
 }

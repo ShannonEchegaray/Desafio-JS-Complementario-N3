@@ -196,6 +196,13 @@ header div{
 
 .alert__button--close{
     width: 1.5em;
+    height: 1.5em;
+}
+
+.alert__button--closeDark{
+    width: 1.5em;
+    height: 1.5em;
+    fill: #aaa;
 }
 
 .alert__body{
@@ -206,16 +213,26 @@ header div{
     padding: 20px;
 }
 
+.alert__table--dark{
+    padding: 20px;
+}
+
 .alert__table__enc{
     display:flex;
     justify-content: center;
     padding: 0.2em;
+    border-top: 1px solid grey;
+    border-bottom: 1px solid grey;
+}
+
+.alert__table__enc__text{
+    width: 20%;
 }
 
 .alert__table__product{
     display: flex;
     justify-content: space-evenly;
-    padding: 0.2em;
+    padding: 0.4em;
 }
 
 .alert__table__product__text{
