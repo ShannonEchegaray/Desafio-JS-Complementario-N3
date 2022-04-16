@@ -293,27 +293,33 @@ const crearAlerta = (comprar) => {
     alerta__tabla__encabezado.classList.add("alert__table__enc")
     alerta__tabla.appendChild(alerta__tabla__encabezado);
 
-    encabezado1 = document.createElement("p");
-    encabezado2 = document.createElement("p");
-    encabezado3 = document.createElement("p");
-    encabezado4 = document.createElement("p");
-    encabezado5 = document.createElement("p");
+    let encabezado1 = document.createElement("p");
+    let encabezado2 = document.createElement("p");
+    let encabezado3 = document.createElement("p");
+    let encabezado4 = document.createElement("p");
+    let encabezado5 = document.createElement("p");
+    let encabezado6 = document.createElement("p");
+
     encabezado1.classList.add("alert__table__enc__text");
     encabezado2.classList.add("alert__table__enc__text");
     encabezado3.classList.add("alert__table__enc__text");
     encabezado4.classList.add("alert__table__enc__text");
     encabezado5.classList.add("alert__table__enc__text");
+    encabezado6.classList.add("alert__table__enc__text");
+
     encabezado1.innerText = "Cantidad";
     encabezado2.innerText = "ID";
     encabezado3.innerText = "Nombre";
     encabezado4.innerText = "Precio";
-    encabezado5.innerText = "Subtotal";
+    encabezado5.innerText = "Stock";
+    encabezado6.innerText = "Subtotal";
 
     alerta__tabla__encabezado.appendChild(encabezado1);
     alerta__tabla__encabezado.appendChild(encabezado2);
     alerta__tabla__encabezado.appendChild(encabezado3);
     alerta__tabla__encabezado.appendChild(encabezado4);
     alerta__tabla__encabezado.appendChild(encabezado5);
+    alerta__tabla__encabezado.appendChild(encabezado6);
 
     //Agregando productos a la tabla
     for(const producto of productos){
@@ -326,28 +332,50 @@ const crearAlerta = (comprar) => {
         let columna1__input = document.createElement("input");
         columna1__input.setAttribute("type", "number");
         columna1__input.setAttribute("pattern", "[^0-9+]");
-        columna1__input.oninput = () => {
-            if(columna1__input.value < 0){
-                columna1__input.value = 0;
+        if(comprar){
+            columna1__input.oninput = () => {
+                if(columna1__input.value < 0){
+                    columna1__input.value = 0;
+                }
+                subtotal = producto.costo * columna1__input.value;
+                columna6.innerText = subtotal;
+    
+                columna5.innerText = producto.cantidad + parseInt(columna1__input.value);
             }
-            subtotal = producto.costo * columna1__input.value;
-            columna5.innerText = subtotal;
+        } else {
+            columna1__input.oninput = () => {
+                if(columna1__input.value < 0){
+                    columna1__input.value = 0;
+                }
+                subtotal = producto.costo * columna1__input.value;
+                columna6.innerText = subtotal;
+    
+                columna5.innerText = producto.cantidad - parseInt(columna1__input.value);
+            } 
         }
+        
         
         let columna2 = document.createElement("p");
         let columna3 = document.createElement("p");
         let columna4 = document.createElement("p");
         let columna5 = document.createElement("p");
+        let columna6 = document.createElement("p");
         columna1.classList.add("alert__table__product__text");        
         columna2.classList.add("alert__table__product__text");        
         columna3.classList.add("alert__table__product__text");        
         columna4.classList.add("alert__table__product__text");        
-        columna5.classList.add("alert__table__product__subtotal");   
+        columna5.classList.add("alert__table__product__text");        
+        columna6.classList.add("alert__table__product__subtotal");   
         
         columna2.innerText = producto.id;
         columna3.innerText = producto.nombre;
-        columna4.innerText = producto.precio;
-        columna5.innerText = subtotal;
+        if(comprar){
+            columna4.innerText = producto.costo;
+        } else {
+            columna4.innerText = producto.precio;
+        }
+        columna5.innerText = producto.cantidad;
+        columna6.innerText = subtotal;
 
         columna1.appendChild(columna1__input);
         alerta__tabla__producto.appendChild(columna1);
@@ -355,45 +383,84 @@ const crearAlerta = (comprar) => {
         alerta__tabla__producto.appendChild(columna3);
         alerta__tabla__producto.appendChild(columna4);
         alerta__tabla__producto.appendChild(columna5);
+        alerta__tabla__producto.appendChild(columna6);
     }
 
-    let alerta__boton__comprar = document.createElement("a");
-    alerta__boton__comprar.classList.add("alert__boton");
-    alerta__boton__comprar.innerText = "Comprar";
-    alerta__boton__comprar.onclick = () => {
-        let tabla = document.getElementsByClassName("alert__table__product");
-        let precioFinal = 0;
-        for(const filas of tabla){
-            if(filas.lastChild.innerText != 0){
-                precioFinal += parseInt(filas.lastChild.innerText);
-            }
-        }
-        if(precioFinal == 0){
-            cerrarAlerta();
-        } else {
-            let nuevaLista = new Lista();
+    let alerta__boton__accion = document.createElement("a");
+    alerta__boton__accion.classList.add("alert__boton");
+    if(comprar){
+        alerta__boton__accion.innerText = "Comprar";
+        alerta__boton__accion.onclick = () => {
+            let tabla = document.getElementsByClassName("alert__table__product");
+            let precioFinal = 0;
             for(const filas of tabla){
                 if(filas.lastChild.innerText != 0){
-                    let id = filas.childNodes[1].innerText;
-                    let nombre = filas.childNodes[2].innerText;
-                    let cantidad = parseInt(filas.childNodes[0].firstChild.value);
-                    let precio = parseInt(filas.childNodes[3].innerText)
-
-                    nuevaLista.id.push(id)
-                    nuevaLista.nombre.push(nombre);
-                    nuevaLista.cantidad.push(cantidad);
-                    nuevaLista.precio.push(precio);
-                    nuevaLista.precioFinal = precioFinal;
-
-                    productos.find(el => el.nombre.toLowerCase() == nombre.toLowerCase()).agregarStock(cantidad);
+                    precioFinal += parseInt(filas.lastChild.innerText);
                 }
             }
-            historialCompras.push(nuevaLista);
-            cerrarAlerta();
-            renderProductos();
+            if(precioFinal == 0){
+                cerrarAlerta();
+            } else {
+                let nuevaLista = new Lista();
+                for(const filas of tabla){
+                    if(filas.lastChild.innerText != 0){
+                        let id = filas.childNodes[1].innerText;
+                        let nombre = filas.childNodes[2].innerText;
+                        let cantidad = parseInt(filas.childNodes[0].firstChild.value);
+                        let precio = parseInt(filas.childNodes[3].innerText)
+    
+                        nuevaLista.id.push(id)
+                        nuevaLista.nombre.push(nombre);
+                        nuevaLista.cantidad.push(cantidad);
+                        nuevaLista.precio.push(precio);
+                        nuevaLista.precioFinal = precioFinal;
+    
+                        productos.find(el => el.id == id).agregarStock(cantidad);
+                    }
+                }
+                historialCompras.push(nuevaLista);
+                cerrarAlerta();
+                renderProductos();
+            }
+        }
+    
+    } else {
+        alerta__boton__accion.innerText = "Vender";
+        alerta__boton__accion.onclick = () => {
+            let tabla = document.getElementsByClassName("alert__table__product");
+            let precioFinal = 0;
+            for(const filas of tabla){
+                if(filas.lastChild.innerText != 0){
+                    precioFinal += parseInt(filas.lastChild.innerText);
+                }
+            }
+            if(precioFinal == 0){
+                cerrarAlerta();
+            } else {
+                let nuevaLista = new Lista();
+                for(const filas of tabla){
+                    if(filas.lastChild.innerText != 0){
+                        let id = filas.childNodes[1].innerText;
+                        let nombre = filas.childNodes[2].innerText;
+                        let cantidad = parseInt(filas.childNodes[0].firstChild.value);
+                        let precio = parseInt(filas.childNodes[3].innerText)
+    
+                        nuevaLista.id.push(id)
+                        nuevaLista.nombre.push(nombre);
+                        nuevaLista.cantidad.push(cantidad);
+                        nuevaLista.precio.push(precio);
+                        nuevaLista.precioFinal = precioFinal;
+    
+                        productos.find(el => el.id == id).venderProducto(cantidad);
+                    }
+                }
+                historialVentas.push(nuevaLista);
+                cerrarAlerta();
+                renderProductos();
+            }
         }
     }
-    alerta.appendChild(alerta__boton__comprar);
+    alerta.appendChild(alerta__boton__accion);
 
     document.body.appendChild(alerta__fondo);
     document.body.appendChild(alerta);

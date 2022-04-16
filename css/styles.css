@@ -219,14 +219,14 @@ header div{
 
 .alert__table__enc{
     display:flex;
-    justify-content: center;
+    justify-content: space-evenly;
     padding: 0.2em;
     border-top: 1px solid grey;
     border-bottom: 1px solid grey;
 }
 
 .alert__table__enc__text{
-    width: 20%;
+    width: 15%;
 }
 
 .alert__table__product{
@@ -236,11 +236,11 @@ header div{
 }
 
 .alert__table__product__text{
-    width: 20%;
+    width: 15%;
 }
 
 .alert__table__product__subtotal{
-    width: 20%;
+    width: 15%;
 }
 
 .alert__table__product__text input{
