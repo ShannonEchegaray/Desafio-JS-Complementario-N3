@@ -232,6 +232,11 @@ function setDark(){
     const footer = document.querySelector("footer");
     footer.classList.remove("footer");
     footer.classList.add("footer--dark");
+    if(document.querySelector(".alert")){
+        let alerta = document.querySelector(".alert");
+        alerta.classList.remove("alert");
+        alerta.classList.add("alert--dark")        
+    }
     darkMode = true;
     renderProductos()
 }
@@ -247,6 +252,11 @@ function setLight(){
     const footer = document.querySelector("footer");
     footer.classList.remove("footer--dark");
     footer.classList.add("footer");
+    if(document.querySelector(".alert--dark")){
+        let alerta = document.querySelector(".alert--dark");
+        alerta.classList.remove("alert--dark");
+        alerta.classList.add("alert")        
+    }
     darkMode = false;
     renderProductos()
 }
