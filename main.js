@@ -383,31 +383,37 @@ const crearAlerta = (comprar) => {
         columna1__input.setAttribute("pattern", "[^0-9+]");
         if(comprar){
             columna1__input.oninput = () => {
-                if(columna1__input.value == ""){
-                    columna1__input.value = 0;
-                }
                 if(columna1__input.value < 0){
                     columna1__input.value = 0;
                 }
-                subtotal = producto.costo * columna1__input.value;
-                columna6.innerText = subtotal;
-    
-                columna5.innerText = producto.cantidad + parseInt(columna1__input.value);
+                if(columna1__input.value == ""){
+                    columna6.innerText = 0;
+                    columna5.innerText = 0;
+                } else {
+                    let subtotal = producto.costo * columna1__input.value;
+                    columna6.innerText = subtotal;
+        
+                    columna5.innerText = producto.cantidad + parseInt(columna1__input.value);
+                }
+                
             }
         } else {
             columna1__input.oninput = () => {
-                if(columna1__input.value == ""){
-                    columna1__input.value = 0;
-                }
                 if(columna1__input.value < 0){
                     columna1__input.value = 0;
                 } else if(columna1__input.value > producto.cantidad){
                     columna1__input.value = producto.cantidad;
                 }
-                subtotal = producto.costo * columna1__input.value;
-                columna6.innerText = subtotal;
-    
-                columna5.innerText = producto.cantidad - parseInt(columna1__input.value);
+                if(columna1__input.value == ""){
+                    columna6.innerText = 0;
+                    columna5.innerText = 0;
+                } else {
+                    let subtotal = producto.costo * columna1__input.value;
+                    columna6.innerText = subtotal;
+        
+                    columna5.innerText = producto.cantidad - parseInt(columna1__input.value);
+                }
+
             } 
         }
         
