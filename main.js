@@ -383,6 +383,9 @@ const crearAlerta = (comprar) => {
         columna1__input.setAttribute("pattern", "[^0-9+]");
         if(comprar){
             columna1__input.oninput = () => {
+                if(columna1__input.value = ""){
+                    columna1__input.value = 0;
+                }
                 if(columna1__input.value < 0){
                     columna1__input.value = 0;
                 }
@@ -393,6 +396,9 @@ const crearAlerta = (comprar) => {
             }
         } else {
             columna1__input.oninput = () => {
+                if(columna1__input.value = ""){
+                    columna1__input.value = 0;
+                }
                 if(columna1__input.value < 0){
                     columna1__input.value = 0;
                 } else if(columna1__input.value > producto.cantidad){
