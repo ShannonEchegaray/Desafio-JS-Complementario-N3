@@ -3,78 +3,6 @@ const categorias = ["Carne", "Verdura"];
 const productos = [];
 const historialCompras = [];
 const historialVentas = [];
-// Funciones generales
-const verificarNumero = (texto) => {
-    let dato = parseInt(prompt(texto));
-    while(isNaN(dato)){
-        dato = parseInt(prompt(`El dato introducido es incorrecto.\n${texto}`));
-    }
-    return dato;
-}
-
-const verificarTexto = (texto) => {
-    let dato = prompt(texto);
-    while(dato == null || dato.trim() == ""){
-        dato = prompt(`El dato introducido es incorrecto.\n${texto}`)
-    }
-    return dato;
-}
-
-//Funciones para Listar en alertas
-//Funcion para listar el Array con numeros
-const listarArray = (array, fn, opcionAlterna, sinNumeros) => {
-    data = "";
-    let i;
-    if(sinNumeros == "sinNumeros"){
-        for(i = 0; i < array.length ; i++){
-            data = data + fn(array[i]) + "\n";
-        }     
-    } else {
-        for(i = 0; i < array.length ; i++){
-            data = data + (i+1) + ". " + fn(array[i]) + "\n";
-        }
-    }
-
-   
-    if(opcionAlterna == "noSalir") {
-        return data;
-    } else if(!(opcionAlterna == undefined)){
-        data = data + (i + 1) + ". " + opcionAlterna + " \n";
-        data = data + (i + 2) + ". Salir";
-    } else {
-        data = data + (i + 1) + ". Salir"
-    }
-    
-    return data;
-}
-
-const expresarLista = (objeto) => {
-    let dato = "";
-    dato += objeto.fecha + "\n";
-    dato += "Nombre        Cantidad        Precio\n" // Se utilizan 8 Espacios.
-    for(let i = 0; i < objeto.cantidad.length; i++){
-        //Se Calcula el espacio entre Textos para que la lista se vea bien, lamentablemente el tipo de letra usado no tiene el mismo tamaño y no queda bien, en console.log() se puede apreciar la idea
-        let cantidadEspaciado1 = " ";
-        let cantidadEspaciado2 = " ";
-        cantidadEspaciado1 = cantidadEspaciado1.repeat(14 - objeto.nombre[i].length);
-        cantidadEspaciado2 = cantidadEspaciado2.repeat(16 - objeto.cantidad[i].toString().length);
-        dato += `${objeto.nombre[i]}${cantidadEspaciado1}${objeto.cantidad[i]}${cantidadEspaciado2}${objeto.precio[i]}\n`;
-    }
-    dato += "Total:          " + objeto.precioFinal;
-    console.log(dato);
-    return dato;
-}
-
-const expresarProducto = (producto) => {
-    let dato = "";
-    let claves = Object.keys(producto);
-    let valores = Object.values(producto);
-    let i;
-    for(i = 0; i < claves.length; i++){
-        dato = dato + claves[i] + "\: " + valores[i] + "\n";
-    }
-    return dato;
-}
 
 //Clases usadas en el programa
 class Producto{
@@ -449,6 +377,8 @@ const crearAlerta = (comprar) => {
         alerta__tabla__producto.appendChild(columna6);
     }
 
+    //Creando boton y agregandole funcionalidad
+
     let alerta__boton__accion = document.createElement("a");
     alerta__boton__accion.classList.add(verificarModo("alert__boton"));
     if(comprar){
@@ -588,6 +518,7 @@ const eventoProducto = (eleccion, id) =>{
             alerta__body.classList.add("alerta__producto__body");
             alerta.appendChild(alerta__body);
 
+            //Agregando inputs a la alerta            
             parrafo__nombre = document.createElement("p");
             parrafo__nombre.innerText = "Nombre:"
             nombre = document.createElement("input");
@@ -639,7 +570,9 @@ const eventoProducto = (eleccion, id) =>{
             alerta__producto__boton.innerText = "Agregar Producto";
             alerta.appendChild(alerta__producto__boton);
 
-        error = document.createElement("p");
+            //Agregando boton y dandole funcionalidad
+
+            error = document.createElement("p");
             error.classList.add("alerta__error");
             alerta__body.appendChild(error);
 
@@ -760,6 +693,7 @@ const eventoProducto = (eleccion, id) =>{
 
             buscarProducto = productos.find(el => el.id == id);
 
+            //Agregandole inputs a la alerta
             parrafo__nombre = document.createElement("p");
             parrafo__nombre.innerText = "Nombre:"
             nombre = document.createElement("input");
@@ -806,6 +740,8 @@ const eventoProducto = (eleccion, id) =>{
             alerta__producto__boton.innerText = "Modificar Producto";
             alerta.appendChild(alerta__producto__boton);
 
+
+            //Agregando boton a la alerta y agregandole funcionalidad
             error = document.createElement("p");
             error.classList.add("alerta__error");
             alerta__body.appendChild(error);
@@ -930,6 +866,8 @@ const eventoProducto = (eleccion, id) =>{
             let parrafo__body = document.createElement("p");
             parrafo__body.innerText = `¿Esta seguro que desea eliminar ${buscarProducto.nombre}?`;
             alerta__body.appendChild(parrafo__body);
+
+            //Agregandole botones a la alerta y dandoles funcionalidad
 
             let contenedor = document.createElement("div");
             contenedor.classList.add("alerta__producto__contenedor__botones");
