@@ -377,6 +377,8 @@ const crearAlerta = (comprar) => {
         alerta__tabla__producto.appendChild(columna6);
     }
 
+    //Creando boton y agregandole funcionalidad
+
     let alerta__boton__accion = document.createElement("a");
     alerta__boton__accion.classList.add(verificarModo("alert__boton"));
     if(comprar){
@@ -516,6 +518,7 @@ const eventoProducto = (eleccion, id) =>{
             alerta__body.classList.add("alerta__producto__body");
             alerta.appendChild(alerta__body);
 
+            //Agregando inputs a la alerta            
             parrafo__nombre = document.createElement("p");
             parrafo__nombre.innerText = "Nombre:"
             nombre = document.createElement("input");
@@ -567,7 +570,9 @@ const eventoProducto = (eleccion, id) =>{
             alerta__producto__boton.innerText = "Agregar Producto";
             alerta.appendChild(alerta__producto__boton);
 
-        error = document.createElement("p");
+            //Agregando boton y dandole funcionalidad
+
+            error = document.createElement("p");
             error.classList.add("alerta__error");
             alerta__body.appendChild(error);
 
@@ -688,6 +693,7 @@ const eventoProducto = (eleccion, id) =>{
 
             buscarProducto = productos.find(el => el.id == id);
 
+            //Agregandole inputs a la alerta
             parrafo__nombre = document.createElement("p");
             parrafo__nombre.innerText = "Nombre:"
             nombre = document.createElement("input");
@@ -734,6 +740,8 @@ const eventoProducto = (eleccion, id) =>{
             alerta__producto__boton.innerText = "Modificar Producto";
             alerta.appendChild(alerta__producto__boton);
 
+
+            //Agregando boton a la alerta y agregandole funcionalidad
             error = document.createElement("p");
             error.classList.add("alerta__error");
             alerta__body.appendChild(error);
@@ -858,6 +866,8 @@ const eventoProducto = (eleccion, id) =>{
             let parrafo__body = document.createElement("p");
             parrafo__body.innerText = `¿Esta seguro que desea eliminar ${buscarProducto.nombre}?`;
             alerta__body.appendChild(parrafo__body);
+
+            //Agregandole botones a la alerta y dandoles funcionalidad
 
             let contenedor = document.createElement("div");
             contenedor.classList.add("alerta__producto__contenedor__botones");
